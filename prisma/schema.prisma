@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// User -> movie -> WatchList
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  pwChangeAt DateTime? 
+
+  movies Movie[] @relation("MovieCreator")
+  watchListItems WatchListItem[]
+}
+
+model Movie {
+  id          String   @id @default(cuid())
+  title       String
+  overview    String
+  releaseYear Int
+  genres      String[] @default([])
+  runtime     Int?
+  posterUrl  String?
+  createdBy   String
+  createdAt   DateTime @default(now())
+
+  creator User @relation("MovieCreator", fields: [createdBy], references: [id])
+  watchListItems WatchListItem[]
+}
+
+model WatchListItem {
+  id        String   @id @default(cuid())
+  userId    String
+  movieId   String
+  status    WatchListStatus @default(PLANNED)
+  rating   Int?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@unique([userId, movieId])
+  // Define foreign key relationships
+  user User @relation(fields: [userId], references: [id])
+  movie Movie @relation(fields: [movieId], references: [id])
+}
+
+// CREATE TYPE "WatchListStatus" AS ENUM ('PLANNED', 'WATCHING', 'COMPLETED', 'DROPPED');
+enum WatchListStatus {
+  PLANNED
+  WATCHING
+  COMPLETED
+  DROPPED
+}
