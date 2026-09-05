@@ -1,9 +1,8 @@
 import express from "express";
+import { getAllMovies } from "../controllers/movieController.js";
 
 const router = express.Router();
 
-router.get('/test', (req, res) => {
-    res.json({ message: 'Hello, World!' });
-});
+router.get('/', getAllMovies);
 
 export default router;
