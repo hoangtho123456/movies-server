@@ -31,7 +31,7 @@ const getAllMovies = async (req, res) => {
                 movies,
             },
             options: {
-                total: movies.length,
+                total: await prisma.movie.count({ where }),
                 limit: options.take || null,
                 offset: options.skip || null,
                 page: req.query.page || null,
