@@ -95,7 +95,7 @@ const resetPassword = async (req, res) => {
             where: { email },
             data: {
                 password: hashedNewPassword,
-                pwChangeAt: new Date(), // Update the password change timestamp
+                pwdChangedAt: new Date(), // Update the password change timestamp
             },
         });
 
